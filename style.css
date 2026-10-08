@@ -1011,3 +1011,100 @@ body {
 .explore-btn:hover {
   transform: scale(1.15) translateY(-5px);
 }
+
+/* Countdown Widget Styling */
+.countdown-widget {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 15px 30px;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 30px rgba(255, 77, 109, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  max-width: 600px;
+  width: 90%;
+  transition: all 0.3s ease;
+}
+
+.countdown-widget:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(255, 77, 109, 0.25);
+}
+
+.birthday-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #ff4d6d 0%, #c9184a 100%);
+  color: white;
+  padding: 6px 18px;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(255, 77, 109, 0.3);
+}
+
+.badge-icon {
+  font-size: 1.1rem;
+}
+
+.timer-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.timer-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  padding: 8px 14px;
+  border-radius: 12px;
+  min-width: 65px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 77, 109, 0.1);
+}
+
+.timer-box span {
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  line-height: 1;
+}
+
+.timer-box label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-light);
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.timer-colon {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.birthday-status {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.birthday-status.is-birthday-today {
+  color: #c9184a;
+  font-size: 1.05rem;
+  animation: pulse 1.5s infinite alternate;
+}

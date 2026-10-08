@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Special Surprise | Happy Birthday</title>
+  <title>A Special Surprise for Ammu | Happy Birthday 07-10-2026</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,6 +18,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <link rel="stylesheet" href="style2.css">
+  <script src="config.js"></script>
 </head>
 
 <body>
@@ -32,26 +33,29 @@
             <img src="./img/girl2.jpeg" alt="Birthday Celebration" class="main-image">
             <div class="image-shimmer"></div>
           </div>
+          <div class="photo-badge">
+            <span class="badge-icon">💖</span>
+            <span id="date-badge-text">07-10-2026</span>
+          </div>
         </div>
 
         <div class="message-section">
-          <h1 class="celebrate-title">Happy Birthday, <br><span>My Love</span></h1>
+          <h1 class="celebrate-title">Happy Birthday, <br><span id="recipient-name">Ammu</span></h1>
           <div class="message-content">
-            <p class="reveal-p">Having you in my life makes me feel like the luckiest person alive.</p>
-            <p class="reveal-p">Your smile, your love, your presence — they complete my world.</p>
-            <p class="reveal-p">On your special day, I wish all your dreams come true. 💖</p>
+            <p class="reveal-p" id="msg-line-1">Having you in my life makes me feel like the luckiest person alive.</p>
+            <p class="reveal-p" id="msg-line-2">Your smile, your love, your presence — they complete my world.</p>
+            <p class="reveal-p" id="msg-line-3">On your special day (07-10-2026), I wish all your dreams come true. 💖</p>
           </div>
 
           <div class="action-section">
             <button id="add-wish" class="add-btn">
-              <span class="icon">✨</span> Add a Special Wish
+              <span class="icon">✨</span> Add a Special Wish for Ammu
             </button>
           </div>
 
           <div class="footer-info">
-            <div class="credit">Made with <span class="heart-pulse">❤</span> by <span class="author">Engr Shuvo
-                Das</span></div>
-            <a href="index.html" class="back-home">Back to start</a>
+            <div class="credit">Made with <span class="heart-pulse">❤</span> by <span class="author" id="author-name">TV</span></div>
+            <a href="index.html" class="back-home">← Back to Birthday Card</a>
           </div>
         </div>
       </div>
@@ -69,6 +73,38 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Hydrate Dynamic Configuration
+      const cfg = window.BIRTHDAY_CONFIG || { name: 'Ammu', dateStrFormatted: '07-10-2026', senderName: 'TV' };
+      
+      const recipientNameEl = document.getElementById('recipient-name');
+      if (recipientNameEl) recipientNameEl.textContent = cfg.name;
+
+      const dateBadgeEl = document.getElementById('date-badge-text');
+      if (dateBadgeEl) dateBadgeEl.textContent = cfg.dateStrFormatted || '07-10-2026';
+
+      const authorEl = document.getElementById('author-name');
+      if (authorEl && cfg.senderName) authorEl.textContent = cfg.senderName;
+
+      if (cfg.messages) {
+        if (cfg.messages.surpriseSubtitle) {
+          const m1 = document.getElementById('msg-line-1');
+          if (m1) m1.textContent = cfg.messages.surpriseSubtitle;
+        }
+        if (cfg.messages.surpriseText2) {
+          const m2 = document.getElementById('msg-line-2');
+          if (m2) m2.textContent = cfg.messages.surpriseText2;
+        }
+        if (cfg.messages.surpriseText3) {
+          const m3 = document.getElementById('msg-line-3');
+          if (m3) m3.textContent = cfg.messages.surpriseText3;
+        }
+      }
+
+      const addWishBtn = document.getElementById('add-wish');
+      if (addWishBtn && cfg.name) {
+        addWishBtn.innerHTML = `<span class="icon">✨</span> Add a Special Wish for ${cfg.name}`;
+      }
+
       // Entrance Animations
       const tl = gsap.timeline();
 
@@ -142,7 +178,6 @@
       }
 
       // Add Wish Button Interaction
-      const addWishBtn = document.getElementById('add-wish');
       addWishBtn.addEventListener('click', () => {
         // Extra big confetti burst
         const count = 200;
@@ -165,7 +200,7 @@
 
         // Show a sweet message
         const originalText = addWishBtn.innerHTML;
-        addWishBtn.innerHTML = "✨ Wish Sent to the Universe!";
+        addWishBtn.innerHTML = `✨ Wish for ${cfg.name} Sent to the Universe! 💖`;
         addWishBtn.style.pointerEvents = "none";
 
         setTimeout(() => {

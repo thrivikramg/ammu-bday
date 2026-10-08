@@ -1,4 +1,6 @@
-<h1>🎉 Birthday Wish Card | MyLove Edition</h1>
+# ammu-bday
+
+<h1>🎉 Birthday Wish Card | Ammu Edition</h1>
 
 <p>A heartwarming and animated web-based birthday card made with only HTML, CSS, and JS — no backend or framework needed. This page is designed to give your loved ones a memorable digital surprise! 💝</p>
 

@@ -2,6 +2,38 @@ document.addEventListener('DOMContentLoaded', () => {
   // GSAP Setup
   gsap.registerPlugin(TextPlugin, ScrollTrigger);
 
+  // Hydrate Dynamic Config
+  const cfg = window.BIRTHDAY_CONFIG || {
+    name: 'Ammu',
+    dateStrFormatted: '07-10-2026',
+    dateDisplay: 'October 7, 2026',
+    senderName: 'TV'
+  };
+
+  const recipientNameEl = document.getElementById('recipient-name');
+  if (recipientNameEl) recipientNameEl.textContent = cfg.name;
+
+  const wishTitleEl = document.getElementById('wish-title');
+  if (wishTitleEl) wishTitleEl.textContent = `Happy Birthday, ${cfg.name}!`;
+
+  const loaderTextEl = document.getElementById('loader-text');
+  if (loaderTextEl) loaderTextEl.textContent = `Preparing something special for ${cfg.name}...`;
+
+  const signatureEl = document.getElementById('signature');
+  if (signatureEl && cfg.senderName) signatureEl.textContent = cfg.senderName;
+
+  const polaroidCaptionEl = document.getElementById('polaroid-caption');
+  if (polaroidCaptionEl) polaroidCaptionEl.textContent = `${cfg.name} & Always 💖`;
+
+  const endingTitleEl = document.getElementById('ending-title');
+  if (endingTitleEl) endingTitleEl.textContent = `To Many More Years Together, ${cfg.name}...`;
+
+  const birthdayDateDisplay = document.getElementById('birthday-date-display');
+  if (birthdayDateDisplay) birthdayDateDisplay.textContent = cfg.dateStrFormatted || '07-10-2026';
+
+  const badgeText = document.getElementById('badge-text');
+  if (badgeText) badgeText.innerHTML = `${cfg.name}'s Birthday: <strong id="birthday-date-display">${cfg.dateStrFormatted || '07-10-2026'}</strong>`;
+
   // Constants & Elements
   const card = document.getElementById('card');
   const openBtn = document.getElementById('open');
@@ -13,9 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const endingScene = document.getElementById('ending-scene');
   const replayBtn = document.getElementById('replay-btn');
   const heartTrigger = document.getElementById('heart-trigger');
-  const signature = document.getElementById('signature');
   const revealSurpriseBtn = document.getElementById('reveal-surprise-btn');
-
   const cardFront = document.getElementById('card-front');
 
   let isMusicPlaying = false;
@@ -23,7 +53,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const colors = ['#ff4d6d', '#ff758f', '#ffb3c1', '#ffc8dd', '#fb6f92'];
 
-  // 1. LOADING SCREEN
+  // 1. LIVE COUNTDOWN TIMER
+  function updateLiveTimer() {
+    if (!window.getBirthdayCountdown) return;
+    const countdown = window.getBirthdayCountdown();
+
+    const daysEl = document.getElementById('timer-days');
+    const hoursEl = document.getElementById('timer-hours');
+    const minsEl = document.getElementById('timer-minutes');
+    const secsEl = document.getElementById('timer-seconds');
+    const statusEl = document.getElementById('birthday-status');
+
+    if (countdown.isToday) {
+      if (daysEl) daysEl.textContent = '00';
+      if (hoursEl) hoursEl.textContent = '00';
+      if (minsEl) minsEl.textContent = '00';
+      if (secsEl) secsEl.textContent = '00';
+      if (statusEl) {
+        statusEl.innerHTML = `🎉 <strong>HAPPY BIRTHDAY ${cfg.name.toUpperCase()}! TODAY IS THE DAY!</strong> 🎂🎈`;
+        statusEl.classList.add('is-birthday-today');
+      }
+    } else if (countdown.isPast) {
+      if (statusEl) statusEl.innerHTML = `💖 Celebrating ${cfg.name}'s Special Birthday Year! ✨`;
+    } else {
+      if (daysEl) daysEl.textContent = String(countdown.days).padStart(2, '0');
+      if (hoursEl) hoursEl.textContent = String(countdown.hours).padStart(2, '0');
+      if (minsEl) minsEl.textContent = String(countdown.minutes).padStart(2, '0');
+      if (secsEl) secsEl.textContent = String(countdown.seconds).padStart(2, '0');
+      if (statusEl) statusEl.innerHTML = `Counting down to ${cfg.dateDisplay} (${cfg.dateStrFormatted}) ✨`;
+    }
+  }
+
+  updateLiveTimer();
+  setInterval(updateLiveTimer, 1000);
+
+  // 2. LOADING SCREEN
   window.addEventListener('load', () => {
     const tl = gsap.timeline();
     tl.to('.progress', { width: '100%', duration: 1.5, ease: 'power2.inOut' })
@@ -39,17 +103,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function startEntranceAnimations() {
     gsap.timeline()
-      .from('.main-title', { y: 50, opacity: 0, duration: 1.2, ease: 'power4.out' })
+      .from('.countdown-widget', { y: -30, opacity: 0, duration: 1, ease: 'power3.out' })
+      .from('.main-title', { y: 50, opacity: 0, duration: 1.2, ease: 'power4.out' }, "-=0.6")
       .from('.cake-container', { scale: 0, opacity: 0, duration: 1, ease: 'back.out(1.7)' }, "-=0.8")
       .from('.card-controls', { y: 20, opacity: 0, duration: 0.8 }, "-=0.5")
       .from('.audio-player', { x: -20, opacity: 0, duration: 0.8 }, "-=0.8");
   }
 
-  // 2. 3D INTERACTION
+  // 3. 3D INTERACTION
   const handleMove = (x, y) => {
     if (window.innerWidth < 1024) return; // Only for desktop
     if (!isCardOpen) {
-      // Very subtle hover effect when closed
       const rx = (window.innerHeight / 2 - y) / 50;
       const ry = (x - window.innerWidth / 2) / 50;
       gsap.to(card, {
@@ -59,21 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power2.out'
       });
     } else {
-      // Even subtler when open to keep text readable
       const rx = (window.innerHeight / 2 - y) / 100;
       const ry = (x - window.innerWidth / 2) / 100;
       gsap.to(card, {
-        rotationX: rx + 5, // 5deg base tilt
+        rotationX: rx + 5,
         rotationY: ry,
         duration: 0.7,
         ease: 'power2.out'
       });
     }
 
-    // Move light source
     gsap.to(cursorLight, { left: x, top: y, duration: 0.3 });
-
-    // Subtle orb reaction
     gsap.to('.orb-1', { x: (x - window.innerWidth / 2) * 0.05, y: (y - window.innerHeight / 2) * 0.05, duration: 2 });
     gsap.to('.orb-2', { x: (window.innerWidth / 2 - x) * 0.05, y: (window.innerHeight / 2 - y) * 0.05, duration: 2 });
   };
@@ -84,29 +144,27 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', (e) => {
       if (!isCardOpen) {
-        const x = (e.gamma || 0) * 2; // Left to right
-        const y = (e.beta || 0) * 2;  // Front to back
+        const x = (e.gamma || 0) * 2;
+        const y = (e.beta || 0) * 2;
         handleMove(window.innerWidth / 2 + x, window.innerHeight / 2 + y);
       }
     });
   }
 
-  // 3. CARD OPEN/CLOSE (Human Flow)
-  // Typing Animation Configuration
+  // 4. CARD OPEN/CLOSE
   const typingConfig = {
-    lines: [
-      "You've been with me through my best days and my hardest ones — and I can't imagine life without you.",
-      "On your special day, I just want you to feel how deeply loved and appreciated you truly are.",
-      "You deserve all the joy in the world, today and always."
+    lines: (cfg.messages && cfg.messages.cardLines) ? cfg.messages.cardLines : [
+      `You've been with me through my best days and my hardest ones — and I can't imagine life without you, ${cfg.name}.`,
+      `On your special day, ${cfg.dateDisplay || '07-10-2026'}, I just want you to feel how deeply loved and appreciated you truly are.`,
+      "You deserve all the joy in the world, today and always! 💖"
     ],
-    duration: 1.5, // Faster typing for better UX
+    duration: 1.5,
     pauseBetweenLines: 0.4
   };
 
   function startTypingAnimation() {
     const tl = gsap.timeline({
       onComplete: () => {
-        // Show the manual surprise button after typing is done
         gsap.to(revealSurpriseBtn, {
           display: 'flex',
           opacity: 1,
@@ -120,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     typingConfig.lines.forEach((line, index) => {
       const elementId = `line-${index + 1}`;
       const el = document.getElementById(elementId);
+      if (!el) return;
 
       tl.to(el, {
         opacity: 1,
@@ -129,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
         .add(() => el.classList.add('typing-active'))
         .to(el, {
-          duration: line.length * 0.04, // Dynamic duration based on length
+          duration: line.length * 0.04,
           text: line,
           ease: 'none'
         })
@@ -144,25 +203,21 @@ document.addEventListener('DOMContentLoaded', () => {
     card.classList.add('is-open');
     document.body.classList.add('card-is-open');
 
-    const tl = gsap.timeline(); // Remove delay for instant response
+    const tl = gsap.timeline();
 
-    // SCALE UP & OPEN: Smooth 1.4 second duration for a premium feel
     tl.to(card, { scale: 1.1, duration: 1.4, ease: 'power3.inOut' }, 0);
     tl.to(cardFront, { rotationY: -180, duration: 1.4, ease: 'power4.inOut' }, 0);
 
-    // Reveal title
     tl.fromTo('.wish-title',
       { opacity: 0, y: 15 },
       { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
       "-=0.4"
     );
 
-    // Start typing animation
     tl.add(() => {
       startTypingAnimation();
     }, "-=0.2");
 
-    // Signature (reveals after title, but before typing finishes)
     tl.fromTo('.signed',
       { opacity: 0, y: 10, filter: 'blur(5px)' },
       { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1, ease: 'power2.out' },
@@ -176,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
     isCardOpen = false;
     card.classList.remove('is-open');
     document.body.classList.remove('card-is-open');
-    // Scale back down instantly but smoothly (1.4s)
     gsap.to(card, { scale: 1, duration: 1.4, ease: 'power3.inOut' });
     gsap.to(cardFront, { rotationY: 0, duration: 1.4, ease: 'power3.inOut' });
   };
@@ -184,27 +238,26 @@ document.addEventListener('DOMContentLoaded', () => {
   openBtn.addEventListener('click', openCard);
   closeBtn.addEventListener('click', closeCard);
 
-  // 4. MODAL INTERACTIONS (LoveFunCode)
+  // 5. MODAL INTERACTIONS (LoveFunCode)
   const funModal = document.getElementById('fun-modal');
   const launchBtn = document.getElementById('launch-fun');
   const closeModalBtn = document.getElementById('close-modal');
 
   launchBtn.addEventListener('click', () => {
     funModal.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Disable scroll
+    document.body.style.overflow = 'hidden';
   });
 
   closeModalBtn.addEventListener('click', () => {
     funModal.classList.remove('active');
-    document.body.style.overflow = ''; // Enable scroll
-    // Force reset iframe to stop music if any
+    document.body.style.overflow = '';
     const iframe = document.getElementById('fun-iframe');
     const src = iframe.src;
     iframe.src = '';
     iframe.src = src;
   });
 
-  // 5. SCROLL REVEAL FOR SURPRISE SECTION
+  // 6. SCROLL REVEAL FOR SURPRISE SECTION
   const surpriseSection = document.getElementById('fun-surprise');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -216,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   observer.observe(surpriseSection);
 
-  // 6. MICRO-INTERACTIONS
+  // 7. MICRO-INTERACTIONS
   heartTrigger.addEventListener('click', () => {
     gsap.to(heartTrigger, {
       scale: 1.8,
@@ -226,29 +279,16 @@ document.addEventListener('DOMContentLoaded', () => {
       repeat: 1,
       onComplete: () => {
         const msg = document.createElement('div');
-        msg.innerText = "You are my everything! ✨";
+        msg.innerText = `${cfg.name}, you are my everything! ✨💖`;
         msg.style.cssText = `position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; background: #ff4d6d; padding: 15px 30px; border-radius: 50px; z-index: 3000; font-weight: 600; box-shadow: 0 10px 25px rgba(255, 77, 109, 0.4);`;
         document.body.appendChild(msg);
         gsap.from(msg, { scale: 0, opacity: 0, duration: 0.5, ease: 'back.out(1.7)' });
-        gsap.to(msg, { y: -40, opacity: 0, delay: 1.5, duration: 0.8, onComplete: () => msg.remove() });
+        gsap.to(msg, { y: -40, opacity: 0, delay: 1.8, duration: 0.8, onComplete: () => msg.remove() });
       }
     });
 
-    for (let i = 0; i < 10; i++) createSparkle(window.innerWidth / 2, window.innerHeight / 2);
+    for (let i = 0; i < 15; i++) createSparkle(window.innerWidth / 2, window.innerHeight / 2);
   });
-
-  // 5. FINAL SCENE TRIGGER
-  function showFinalEnding() {
-    if (!isCardOpen) return;
-    endingScene.classList.add('active');
-    gsap.from('.ending-content > *', {
-      y: 20,
-      opacity: 0,
-      stagger: 0.2,
-      duration: 0.8,
-      ease: 'power3.out'
-    });
-  }
 
   revealSurpriseBtn.addEventListener('click', () => {
     window.location.href = 'bbd.html';
@@ -258,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
     endingScene.classList.remove('active');
   });
 
-  // 6. DECORATIONS
+  // 8. DECORATIONS
   function createParticles() {
     const container = document.getElementById('particles-container');
     for (let i = 0; i < 25; i++) {
@@ -317,4 +357,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-
