@@ -4,12 +4,10 @@
  */
 
 (function () {
-  // Parse URL Parameters if available
   const urlParams = new URLSearchParams(window.location.search);
   const paramName = urlParams.get('name');
   const paramDate = urlParams.get('date');
 
-  // Default target date: October 7, 2026 (07-10-2026)
   const defaultDateStr = '2026-10-07T00:00:00';
   const targetDateStr = paramDate ? `${paramDate}T00:00:00` : defaultDateStr;
   const birthDateObj = new Date(targetDateStr);
@@ -28,25 +26,22 @@
     relationship: 'My Love',
     senderName: 'TV',
     
-    // Dynamic message sets
+    // Dynamic message sets matching user's heartfelt wishes
     messages: {
       cardLines: [
-        "You've been with me through my best days and my hardest ones — and I can't imagine life without you, Ammu.",
-        "On your special day, October 7, 2026, I just want you to feel how deeply loved and appreciated you truly are.",
-        "You deserve all the joy, warmth, and magical moments in the world, today and always! 💖"
+        "Happy birthday to my favourite person, my queen, my boss baby, my cutie patootie & my hottie!",
+        "I love ur heart, ur soft kindness, ur silly childish side and literally anything about u, Ammu.",
+        "Through the good, the messy, and everything ahead -- I love u, Ammu. I always will! 💖"
       ],
-      surpriseTitle: "Happy Birthday, Ammu!",
-      surpriseSubtitle: "Having you in my life makes me feel like the luckiest person alive.",
-      surpriseText2: "Your smile, your love, your presence — they complete my world.",
-      surpriseText3: "On your special day (07-10-2026), I wish all your wildest dreams come true. ✨",
-      endingTitle: "To Many More Beautiful Years, Ammu...",
-      endingSub: "The journey with you is my favorite adventure."
+      surpriseTitle: "Happy Birthday Bujju!",
+      surpriseSubtitle: "Having you in my life makes every single day brighter.",
+      surpriseText2: "I love the real u, and I want to keep learning how to love u better.",
+      surpriseText3: "On your special day (07-10-2026), your full heartfelt PDF letter is ready below! ✨",
+      endingTitle: "To Many More Years Together, Ammu...",
+      endingSub: "Your special birthday PDF letter is ready for you!"
     }
   };
 
-  /**
-   * Helper function to compute countdown time remaining
-   */
   window.getBirthdayCountdown = function () {
     const now = new Date();
     const diff = window.BIRTHDAY_CONFIG.targetDate - now;
