@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. 3D INTERACTION
   const handleMove = (x, y) => {
-    if (window.innerWidth < 1024) return; // Only for desktop
+    if (window.innerWidth < 1024) return;
     if (!isCardOpen) {
       const rx = (window.innerHeight / 2 - y) / 50;
       const ry = (x - window.innerWidth / 2) / 50;
@@ -238,38 +238,16 @@ document.addEventListener('DOMContentLoaded', () => {
   openBtn.addEventListener('click', openCard);
   closeBtn.addEventListener('click', closeCard);
 
-  // 5. MODAL INTERACTIONS (LoveFunCode)
-  const funModal = document.getElementById('fun-modal');
-  const launchBtn = document.getElementById('launch-fun');
-  const closeModalBtn = document.getElementById('close-modal');
-
-  launchBtn.addEventListener('click', () => {
-    funModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+  // 5. PDF SURPRISE REVEAL
+  revealSurpriseBtn.addEventListener('click', () => {
+    window.open('ammu-special-surprise.pdf', '_blank');
   });
 
-  closeModalBtn.addEventListener('click', () => {
-    funModal.classList.remove('active');
-    document.body.style.overflow = '';
-    const iframe = document.getElementById('fun-iframe');
-    const src = iframe.src;
-    iframe.src = '';
-    iframe.src = src;
+  replayBtn.addEventListener('click', () => {
+    endingScene.classList.remove('active');
   });
 
-  // 6. SCROLL REVEAL FOR SURPRISE SECTION
-  const surpriseSection = document.getElementById('fun-surprise');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        surpriseSection.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.2 });
-
-  observer.observe(surpriseSection);
-
-  // 7. MICRO-INTERACTIONS
+  // 6. MICRO-INTERACTIONS & DECORATIONS
   heartTrigger.addEventListener('click', () => {
     gsap.to(heartTrigger, {
       scale: 1.8,
@@ -290,15 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let i = 0; i < 15; i++) createSparkle(window.innerWidth / 2, window.innerHeight / 2);
   });
 
-  revealSurpriseBtn.addEventListener('click', () => {
-    window.location.href = 'bbd.html';
-  });
-
-  replayBtn.addEventListener('click', () => {
-    endingScene.classList.remove('active');
-  });
-
-  // 8. DECORATIONS
   function createParticles() {
     const container = document.getElementById('particles-container');
     for (let i = 0; i < 25; i++) {
